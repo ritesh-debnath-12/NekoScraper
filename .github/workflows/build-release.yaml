@@ -32,8 +32,9 @@ jobs:
       - name: Get dependencies with jdeps
         id: jdeps
         run: |
-          $modules = & jdeps --multi-release 21 --print-module-deps --ignore-missing-deps "target/NekoScraper.jar"
-          echo "modules=$modules" >> $env.GITHUB_OUTPUT
+          $modules = jdeps --multi-release 21 --print-module-deps --ignore-missing-deps "target/NekoScraper.jar"
+          Write-Host "Modules: $modules"
+          "modules=$modules" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
         shell: pwsh
 
       - name: Create custom runtime image with jlink
