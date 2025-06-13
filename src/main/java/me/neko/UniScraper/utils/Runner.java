@@ -16,6 +16,7 @@ public class Runner {
             Initializer init = Initializer.WebDriverInit();
             driver = init.driver;
             Map<String, String> env = init.env;
+            boolean isChrome = init.isChrome;
             String roll_prefix = env.get("ROLL_PREFIX").endsWith("-") ? env.get("ROLL_PREFIX") : env.get("ROLL_PREFIX") + "-";
             String semester = env.get("SEMESTER");
             String year = env.get("YEAR");
@@ -46,7 +47,7 @@ public class Runner {
                     } else {
                         i++;
                         pb.step();
-                        utils.downloadReport(driver);
+                        utils.downloadReport(driver, isChrome);
                         utils.goBackToPreviousPage(driver);
                     }
                 }

@@ -154,19 +154,24 @@ public class ScrapingUtilites {
         }
     }
 
-    public void downloadReport(WebDriver driver) {
+    public void downloadReport(WebDriver driver, boolean isChrome) throws InterruptedException {
         this.logger.info("Attempting to download pdf");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         WebElement download_btn = wait.until(ExpectedConditions.elementToBeClickable(By.id("create_pdf")));
         download_btn.click();
 
-        wait.until(d -> driver.getWindowHandles().size() > 1);
-        this.logger.info("Succeeded in downloading pdf!");
+        if(!isChrome){
+            wait.until(d -> driver.getWindowHandles().size() > 1);
+            this.logger.info("Succeeded in downloading pdf!");
 
-        List<Object> tabs = Arrays.asList(driver.getWindowHandles().toArray());
-        driver.switchTo().window(tabs.get(1).toString());
-        driver.close();
-        driver.switchTo().window(tabs.get(0).toString());
+            List<Object> tabs = Arrays.asList(driver.getWindowHandles().toArray());
+            driver.switchTo().window(tabs.get(1).toString());
+            driver.close();
+            driver.switchTo().window(tabs.get(0).toString());
+        }else{
+            Thread.sleep(Duration.ofSeconds(3));
+            this.logger.info("Succeeded in downloading pdf!"); // Chrome does silent stuff...
+        }
     }
 
     public void goBackToPreviousPage(WebDriver driver) {

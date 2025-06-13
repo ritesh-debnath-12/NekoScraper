@@ -13,7 +13,7 @@ public class EnvLoader {
         String line;
 
         while ((line = reader.readLine()) != null) {
-            if ((line.trim().isEmpty())) {
+            if ((line.trim().isEmpty()) || (line.startsWith("OwO"))) {
                 continue;
             }
             String[] parts = line.split("=", 2);
@@ -21,6 +21,7 @@ public class EnvLoader {
                 env.put(parts[0].trim(), parts[1].trim());
             }
         }
+        reader.close();
         return env;
     }
 }

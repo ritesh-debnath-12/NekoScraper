@@ -15,10 +15,12 @@ import java.util.Map;
 public class Initializer {
     public WebDriver driver;
     public Map<String, String> env;
+    public boolean isChrome;
 
-    public Initializer(WebDriver driver, Map<String, String> env) {
+    public Initializer(WebDriver driver, Map<String, String> env, boolean isChrome) {
         this.driver = driver;
         this.env = env;
+        this.isChrome = false;
     }
 
     private static void createInitialFolderHierarchy(Logger logger) {
@@ -52,6 +54,7 @@ public class Initializer {
 
     public static Initializer WebDriverInit() throws IOException {
         Logger logger = LogManager.getLogger(Initializer.class);
+        boolean isChrome = false;
         createInitialFolderHierarchy(logger);
         logger.info("Beginning Initialization of Project");
         logger.info("Attempting to parse .env file");
@@ -82,10 +85,11 @@ public class Initializer {
 
             chromeOptions.setBinary(env.get("BROWSER_BINARY_PATH"));
             driver = new ChromeDriver(chromeOptions);
+            isChrome = true;
             logger.info("Successfully initialized Chrome ");
         }
         driver.get(env.get("PAYLOAD_URL"));
         logger.info("Initialization of Web Driver completed successfully!");
-        return new Initializer(driver, env);
+        return new Initializer(driver, env, isChrome);
     }
 }
