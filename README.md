@@ -10,6 +10,14 @@ A great amount of effort has been put to build this tool, and it was very enjoya
 
 ---
 
+## 🤷 What does it do?
+
+Glad you asked! Just give it some information, annnd it will scrape report cards(in pdf). It also stores some data(name, registration number, SGPA, YGPA) and stores them in a csv file. It also records which students did not give the exam(hence no report card).
+
+Why? Look at FAQ.
+
+---
+
 ## 🔁 Flowchart
 *Here is a flowchart as to how everything plays out...*
 ![Flowchart_goes_here](docs/images/NekoScraper.png "Easter Egg! Here is a cookie for you 🍪")
@@ -111,6 +119,8 @@ Brownie points to you if you added 7z to the path and used it like that!
 
 > Or you can skip all this and run it using IntelliJ 🤷
 
+---
+
 ## ❓FAQ
 
 Q: **Why Firefox is recommended?**
@@ -131,11 +141,13 @@ A: This machine logs almost everything...open the log folder and give me the scr
 
 Q: **Why?**
 
-A: Because I can.
+A: Because I can...and if someone wants to do some data analysis...*wink wink*
 
 Q: **Why Java?**
 
 A: I like Ryan Gosling
+
+---
 
 ## 🫂 Special Thanks
 
@@ -143,6 +155,8 @@ I wrote 1% of the instruction to the miracle sand machine, rest 99% came from th
 - Selenium Team
 - Log4j Team
 - Java(duh)
+- ChromeDriver Team
+- GeckoDriver Team
 - Adoptium's Java Distribution
 - Oracle Docs(there are some things missing in it, but still wonderful documentation regardless!)
 - im-luka for his md-cheatsheet(it looks like this courtesy to him!)
