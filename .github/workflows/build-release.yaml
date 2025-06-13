@@ -1,0 +1,87 @@
+name: Build and Release NekoScraper
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: 21
+
+      - name: Build UniScraper using Maven
+        run: mvn -X clean package
+
+      - name: Remove unshaded base jar
+        run:  Remove-Item -Force target/original-NekoScraper.jar
+        shell: pwsh
+      
+      - name: Get dependencies with jdeps
+        id: jdeps
+        run: |
+          $modules = & jdeps --verbose --multi-release 21 --print-module-deps --ignore-missing-deps "target/NekoScraper.jar"
+          echo "modules=$modules" >> $env.GITHUB_OUTPUT
+        shell: pwsh
+
+      - name: Create custom runtime image with jlink
+        run: jlink --output uniscraper-runtime --add-modules ${{steps.jdeps.outputs.modules}} --no-header-files --no-man-pages
+        shell: pwsh
+
+      - name: Install WiX toolkit and add it to environment variable
+        run: |
+          choco install wixtoolset --yes
+          $wixPath = "C:\Program Files (x86)\WiX Toolset v3.11\bin"
+          $env:Path += ";$wixPath"
+        shell: pwsh
+
+      - name: Create distribution folder
+        run: mkdir dist
+        shell: pwsh
+
+      - name: Package with jpackage
+        run: jpackage --verbose --name NekoScraper --input target --main-jar *.jar --main-class me.neko.Main --app-version "${{github.ref_name}}" --win-console --app-content drivers --runtime-image uniscraper-runtime --type exe --dest dist
+        shell: pwsh
+
+      - name: Copy .env.example to dist
+        run: copy .env.example dist\
+        shell: pwsh
+
+      - name: Save module list to dist
+        run: Set-Content -Path dist\deps.txt -Value "${{steps.jdeps.outputs.modules}}"
+        shell: pwsh
+
+      - name: Copy README.md to dist
+        run: copy README.md dist\
+        shell: pwsh
+
+      - name: Create .7z archive
+        run: |
+          "C:\Program Files\7-Zip\7z.exe" a "NekoScraper-${{github.ref_name}}.7z" ".\dist\*"
+        shell: cmd
+
+      - name: Remove
+
+      - name: Upload compressed artifact to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: NekoScraper-${{github.ref_name}}.7z
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Clean target folder
+        run: mvn clean
+        shell: cmd
+
+      - name: Clean dist folder/directory
+        run: Remove-Item -Recurse -Force dist
+        shell: pwsh
